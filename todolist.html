@@ -1,0 +1,109 @@
+<html>
+<body>
+<div id="message"></div>
+<style>
+ul.ui li, ol.ui li {
+	color: #4c4c4c;
+	margin-left: 15px;
+	padding: 5px 25px 5px 20px;
+	border-bottom: 1px dotted #c0c0c0;
+	border-left: 4px double #f6988b;
+}
+</style>
+<ul class="ui">
+	<li></li>
+</ul>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+<script type="text/javascript">
+/*
+Save Changes Pops up in the right corner
+Auto save changes after a certain amount of time
+*/
+var keys = [];
+var $toInsert = [];
+var $toUpdate = [];
+var table = "PUT TABLE NAME HERE";
+var key = "PUT GOOGLE API KEY NAME HERE";
+$(function() {
+	select(table, key);
+    $("body").on('click','li',function(){
+		$(this).attr('contenteditable','true');
+	});
+	$("body").on('keyup','li', function(e) {
+			keys = [];
+			//IF changed then flag
+			//if changed and empty
+	});
+	$("body").on('keydown','li', function(e) {
+			keys.push(e.which);
+			console.log(keys);
+		if($.inArray(13, keys) > -1 && $.inArray(16, keys) > -1) {
+			//INSERT
+			console.log(keys);
+			keys = [];
+			var store = $(this).clone();
+			$(this).before(store);
+			$(this).text('');
+		}
+		
+	});
+	$("body").on('click','button',function(){
+		console.log("Called:");
+		query();
+	});
+	
+});
+function saving(){
+//add (saving...) message.
+//then click (Saved.)
+}
+/*
+INSERT INTO <table_id> (<column_name> {, <column_name>}*) VALUES (<value> {, <value>}*)
+{ {;INSERT INTO <table_id> (<column_name> {, <column_name>}*) VALUES (<value> {, <value>}*)}* ;}
+*/
+function insert(insertArr){
+
+}
+/*
+UPDATE <table_id>
+SET <column_name> = <value> {, <column_name> = <value> }*
+WHERE ROWID = <row_id>
+*/
+function update(table, $columns, key){
+
+}
+/*
+DELETE FROM <table_id>{ WHERE ROWID = <row_id>}
+*/
+function deleteRecords(deleteArr){
+//foreach item in arr add it to where
+}
+function select(pTable, pKey){
+		var queryurl = "https://www.googleapis.com/fusiontables/v1/query?sql=SELECT%20*%20FROM%20"+pTable+"&key="+key+"&callback=?";
+		 $.ajax({
+			type: "GET",
+			url:  queryurl,
+			dataType: "jsonp",  // return CSV FustionTable response as JSON
+			success: loadList,
+			error: function () {console.log("AJAX ERROR for " + queryurl ); }
+		});
+}
+function loadList(data){
+	console.log(data);
+	//var cols = data.table.cols;
+	var rows = data.rows;
+    var row_count = 0;
+	for (var i = 0; i < rows.length; i++) {
+		if(rows[i][0]){
+			var store = $("li:last").clone();
+			store.text(rows[i][0]);
+			$("li:last").after(store).addClass(rows[i][1]);
+		}
+	}
+	$("li:first").remove();
+	
+}
+
+</script>
+</body>
+</html>
